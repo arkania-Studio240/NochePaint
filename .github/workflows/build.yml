@@ -20,19 +20,21 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.9"
+          build-root-directory: NocheStudio
 
       - name: Pruebas unitarias y APK de depuración
+        working-directory: NocheStudio
         run: gradle testDebugUnitTest assembleDebug --stacktrace
 
       - name: Subir APK
         uses: actions/upload-artifact@v4
         with:
           name: NocheStudio-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          path: NocheStudio/app/build/outputs/apk/debug/*.apk
 
       - name: Subir informes de pruebas
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: informes-de-pruebas
-          path: app/build/reports/
+          path: NocheStudio/app/build/reports/
