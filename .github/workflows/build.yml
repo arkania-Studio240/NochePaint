@@ -3,7 +3,6 @@ name: Build
 on:
   push:
     branches: [ main ]
-  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -11,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Descomprimir proyecto
+        run: unzip -q DarkPaint_RAIZ.zip -d proyecto
 
       - uses: actions/setup-java@v4
         with:
@@ -22,17 +24,18 @@ jobs:
           gradle-version: "8.9"
 
       - name: Pruebas unitarias y APK de depuración
+        working-directory: proyecto
         run: gradle testDebugUnitTest assembleDebug --stacktrace
 
       - name: Subir APK
         uses: actions/upload-artifact@v4
         with:
-          name: NocheStudio-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          name: DarkPaint-debug-apk
+          path: proyecto/app/build/outputs/apk/debug/*.apk
 
       - name: Subir informes de pruebas
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: informes-de-pruebas
-          path: app/build/reports/
+          path: proyecto/app/build/reports/
